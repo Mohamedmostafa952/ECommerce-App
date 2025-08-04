@@ -22,7 +22,6 @@ class BuildTextField extends StatefulWidget {
     this.backgroundColor,
     this.hintTextStyle,
     this.labelTextStyle,
-    this.cursorColor,
     this.readOnly = false,
     this.validation,
     this.onTap,
@@ -42,7 +41,6 @@ class BuildTextField extends StatefulWidget {
   final Color? borderBackgroundColor;
   final TextStyle? hintTextStyle;
   final TextStyle? labelTextStyle;
-  final Color? cursorColor;
   final bool readOnly;
   final int? maxLines;
   final Widget? prefixIcon;
@@ -94,7 +92,8 @@ class _BuildTextFieldState extends State<BuildTextField> {
             obscureText: hidden,
             keyboardType: widget.textInputType,
             obscuringCharacter: '*',
-            cursorColor: widget.cursorColor ?? ColorManager.black,
+            cursorColor: ColorManager.black,
+            cursorErrorColor: ColorManager.black,
             onTap: widget.onTap,
             onEditingComplete: () {
               widget.focusNode?.unfocus();
@@ -133,7 +132,7 @@ class _BuildTextFieldState extends State<BuildTextField> {
                 iconSize: AppSize.s24,
                 splashRadius: AppSize.s1,
                 isSelected: !hidden,
-                color: widget.cursorColor,
+                color: ColorManager.black,
                 selectedIcon: const Icon(Icons.remove_red_eye_rounded),
                 icon: SvgPicture.asset(SvgAssets.eye),
               )
@@ -159,7 +158,7 @@ class _BuildTextFieldState extends State<BuildTextField> {
           ),
           child: Text(
             errorText!,
-            style: getMediumStyle(color: ColorManager.white)
+            style: getMediumStyle(color: Colors.red)
                 .copyWith(fontSize: 18.sp),
           ),
         ),

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EcommerceApp extends StatelessWidget {
-  const EcommerceApp({super.key});
+  const EcommerceApp({super.key, required this.route});
+
+  final String route;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class EcommerceApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: child,
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.signInRoute,
+        initialRoute: route,
       ),
     );
   }
