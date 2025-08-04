@@ -43,6 +43,7 @@ dependencies:
   dartz: ^0.10.1
   injectable:
   get_it:
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

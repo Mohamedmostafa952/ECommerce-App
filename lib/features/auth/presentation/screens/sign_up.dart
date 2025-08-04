@@ -8,7 +8,6 @@ import 'package:e_commerce_app/core/widgets/validators.dart';
 import 'package:e_commerce_app/features/auth/data/models/RegisterRequest.dart';
 import 'package:e_commerce_app/features/auth/presentation/auth_cubit_state/auth_cubit_state.dart';
 import 'package:e_commerce_app/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,6 +34,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late final TextEditingController _emailController;
 
   late final TextEditingController _passwordController;
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -64,126 +65,130 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Padding(
           padding: const EdgeInsets.all(AppPadding.p20),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: AppSize.s40.h),
-                Center(child: SvgPicture.asset(SvgAssets.routeLogo)),
-                SizedBox(height: AppSize.s40.h),
-                BuildTextField(
-                  controller: _nameController,
-                  backgroundColor: ColorManager.white,
-                  hint: 'enter your full name',
-                  label: 'Full Name',
-                  textInputType: TextInputType.name,
-                  validation: AppValidators.validateFullName,
-                ),
-                SizedBox(height: AppSize.s18.h),
-                BuildTextField(
-                  controller: _phoneController,
-                  hint: 'enter your mobile no.',
-                  backgroundColor: ColorManager.white,
-                  label: 'Mobile Number',
-                  validation: AppValidators.validatePhoneNumber,
-                  textInputType: TextInputType.phone,
-                ),
-                SizedBox(height: AppSize.s18.h),
-                BuildTextField(
-                  controller: _emailController,
-                  hint: 'enter your email address',
-                  backgroundColor: ColorManager.white,
-                  label: 'E-mail address',
-                  validation: AppValidators.validateEmail,
-                  textInputType: TextInputType.emailAddress,
-                ),
-                SizedBox(height: AppSize.s18.h),
-                BuildTextField(
-                  controller: _passwordController,
-                  hint: 'enter your password',
-                  backgroundColor: ColorManager.white,
-                  label: 'password',
-                  validation: AppValidators.validatePassword,
-                  isObscured: true,
-                  textInputType: TextInputType.text,
-                ),
-                SizedBox(height: AppSize.s50.h),
-                Center(
-                  child: SizedBox(
-                    height: AppSize.s60.h,
-                    width: MediaQuery.of(context).size.width * .9,
-                    child: BlocListener<AuthCubit, AuthState>(
-                      listener: (context, state) {
-                        if (state is RegisterLoadingState) {
-                          DialogUtils.showLoading(context: context);
-                        } else if (state is RegisterErrorState) {
-                          DialogUtils.hideDialog(context);
-                          DialogUtils.showMessageDialog(
-                            context,
-                            message: state.errorMsg,
-                            posActionTitle: "ok",
-                            posAction: () {
-                              Navigator.pop(context);
-                            },
-                          );
-                        } else if (state is RegisterSuccessState) {
-                          DialogUtils.hideDialog(context);
-                          DialogUtils.showMessageDialog(
-                            context,
-                            posActionTitle: "ok",
-                            posAction: () {
-                              Navigator.pop(context);
-                            },
-                            message: "Register Successfully",
-                          );
-                        }
-                      },
-                      child: CustomElevatedButton(
-                        // borderRadius: AppSize.s8,
-                        label: 'Sign Up',
-                        backgroundColor: ColorManager.white,
-                        textStyle: getBoldStyle(
-                          color: ColorManager.primary,
-                          fontSize: AppSize.s20,
-                        ),
-                        onTap: () {
-                          BlocProvider.of<AuthCubit>(context).register(
-                            RegisterRequest(
-                              name: _nameController.text,
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                              rePassword: _passwordController.text,
-                              phone: _phoneController.text,
-                            ),
-                          );
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: AppSize.s40.h),
+                  Center(child: SvgPicture.asset(SvgAssets.routeLogo)),
+                  SizedBox(height: AppSize.s40.h),
+                  BuildTextField(
+                    controller: _nameController,
+                    backgroundColor: ColorManager.white,
+                    hint: 'enter your full name',
+                    label: 'Full Name',
+                    textInputType: TextInputType.name,
+                    validation: AppValidators.validateFullName,
+                  ),
+                  SizedBox(height: AppSize.s18.h),
+                  BuildTextField(
+                    controller: _phoneController,
+                    hint: 'enter your mobile no.',
+                    backgroundColor: ColorManager.white,
+                    label: 'Mobile Number',
+                    validation: AppValidators.validatePhoneNumber,
+                    textInputType: TextInputType.phone,
+                  ),
+                  SizedBox(height: AppSize.s18.h),
+                  BuildTextField(
+                    controller: _emailController,
+                    hint: 'enter your email address',
+                    backgroundColor: ColorManager.white,
+                    label: 'E-mail address',
+                    validation: AppValidators.validateEmail,
+                    textInputType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: AppSize.s18.h),
+                  BuildTextField(
+                    controller: _passwordController,
+                    hint: 'enter your password',
+                    backgroundColor: ColorManager.white,
+                    label: 'password',
+                    validation: AppValidators.validatePassword,
+                    isObscured: true,
+                    textInputType: TextInputType.text,
+                  ),
+                  SizedBox(height: AppSize.s50.h),
+                  Center(
+                    child: SizedBox(
+                      height: AppSize.s60.h,
+                      width: MediaQuery.of(context).size.width * .9,
+                      child: BlocListener<AuthCubit, AuthState>(
+                        listener: (context, state) {
+                          if (state is RegisterLoadingState) {
+                            DialogUtils.showLoading(context: context);
+                          } else if (state is RegisterErrorState) {
+                            DialogUtils.hideDialog(context);
+                            DialogUtils.showMessageDialog(
+                              context,
+                              message: state.errorMsg,
+                              posActionTitle: "ok",
+                              posAction: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          } else if (state is RegisterSuccessState) {
+                            DialogUtils.hideDialog(context);
+                            DialogUtils.showMessageDialog(
+                              context,
+                              posActionTitle: "ok",
+                              posAction: () {
+                                Navigator.pushReplacementNamed(context, Routes.signInRoute);
+                              },
+                              message: "Register Successfully",
+                            );
+                          }
                         },
+                        child: CustomElevatedButton(
+                          // borderRadius: AppSize.s8,
+                          label: 'Sign Up',
+                          backgroundColor: ColorManager.white,
+                          textStyle: getBoldStyle(
+                            color: ColorManager.primary,
+                            fontSize: AppSize.s20,
+                          ),
+                          onTap: () {
+                            if (!formKey.currentState!.validate()) return;
+                            BlocProvider.of<AuthCubit>(context).register(
+                              RegisterRequest(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                rePassword: _passwordController.text,
+                                phone: _phoneController.text,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 30.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?',
-                      style: getSemiBoldStyle(
-                        color: ColorManager.white,
-                      ).copyWith(fontSize: FontSize.s16.sp),
-                    ),
-                    SizedBox(width: AppSize.s8.w),
-                    GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, Routes.signInRoute),
-                      child: Text(
-                        'login',
+                  SizedBox(height: 30.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Already have an account?',
                         style: getSemiBoldStyle(
                           color: ColorManager.white,
                         ).copyWith(fontSize: FontSize.s16.sp),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(width: AppSize.s8.w),
+                      GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, Routes.signInRoute),
+                        child: Text(
+                          'login',
+                          style: getSemiBoldStyle(
+                            color: ColorManager.white,
+                          ).copyWith(fontSize: FontSize.s16.sp),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
